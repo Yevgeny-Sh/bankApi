@@ -10,6 +10,7 @@ const {
   WithdrawMoney,
   TransferMoneyBetweenUsers,
   getUserById,
+  toggleActive,
 } = require("./utils");
 app.use(express.json());
 
@@ -85,6 +86,17 @@ app.put("/users/transfer", (req, res) => {
       .send(
         TransferMoneyBetweenUsers(req.body.id1, req.body.id2, req.body.ammount)
       );
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+
+//toggle active
+app.put("/users/active", (req, res) => {
+  console.log(req.params.active);
+  console.log(req.body.id);
+  try {
+    res.status(200).send(toggleActive(req.body.id));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }

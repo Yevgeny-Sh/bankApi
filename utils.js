@@ -9,21 +9,20 @@ const readUsersFromFile = () => {
     return [];
   }
 };
-
+const stringToJson = (message, string) => {
+  return JSON.stringify({ [message]: string });
+};
 const addUser = (body) => {
-  const users = loadUsers();
+  const users = readUsersFromFile();
   let foundUser = users.find((user) => {
     if (user.id === body.id) {
       throw Error("The user is allready exist");
     }
   });
+  //TODO  we can check we got object correctly
   users.push(body);
-  saveUsers(users);
+  //saveUsers(users);
   return stringToJson("new-client", body);
-};
-
-const stringToJson = (message, string) => {
-  return JSON.stringify({ [message]: string });
 };
 
 const saveUsers = (users) => {
@@ -39,7 +38,7 @@ const removeUser = (userId) => {
   const indexToRemove = users.indexOf(user2remove);
   if (indexToRemove > -1) {
     users.splice(indexToRemove, 1);
-    saveUsers(users);
+    //saveUsers(users);
     return users;
   } else {
     throw Error("no user to remove");
@@ -52,11 +51,14 @@ const deposition = (userId, ammount) => {
   const user = users.find((obj) => {
     return obj.id === Number(userId);
   });
-  const userIndex = users.indexOf(user);
-  if (userIndex > -1) {
-    user.cash += ammount;
-    saveUsers(users);
-    return users;
+  if (user) {
+    if (!user.isActive) {
+      throw Error("the selected user is inactive- cant deposit!");
+    } else {
+      user.cash += ammount;
+      saveUsers(users);
+      return users;
+    }
   } else {
     throw Error("no user found");
   }
@@ -70,11 +72,14 @@ const UpdateCredit = (userId, newCredit) => {
     const user = users.find((obj) => {
       return obj.id === Number(userId);
     });
-    const userIndex = users.indexOf(user);
-    if (userIndex > -1) {
-      user.credit = newCredit;
-      saveUsers(users);
-      return users;
+    if (user) {
+      if (!user.isActive) {
+        throw Error("the selected user is inactive- cant update credit!");
+      } else {
+        user.credit = newCredit;
+        // saveUsers(users);
+        return users;
+      }
     } else {
       throw Error("no user found");
     }
@@ -88,25 +93,25 @@ const WithdrawMoney = (userId, sumToWithdraw) => {
     const user = users.find((obj) => {
       return obj.id === Number(userId);
     });
-    const userIndex = users.indexOf(user);
-    if (userIndex > -1) {
-      //if user found
-      //   if (sumToWithdraw <= user.cash) {
-      //     user.cash = user.cash - sumToWithdraw;
-      //     //sum bigger then cash- check credit
-      //   } else
-      if (sumToWithdraw <= user.cash + user.credit) {
-        user.cash = user.cash - sumToWithdraw;
+    if (user) {
+      console.log(user.isActive);
+      if (user.isActive) {
+        if (sumToWithdraw <= user.cash + user.credit) {
+          user.cash = user.cash - sumToWithdraw;
+        } else {
+          throw Error("ammount to big to withdraw");
+        }
+        // saveUsers(users);
+        return users;
       } else {
-        throw Error("ammount to big to withdraw");
+        throw Error("user is inActive- cant withdraw");
       }
-      saveUsers(users);
-      return users;
     } else {
       throw Error("no user found (to withdraw)");
     }
   }
 };
+//!active broke function
 //TransferMoneyBwtweenUsers
 const TransferMoneyBetweenUsers = (
   userFromWhom2transferId,
@@ -124,6 +129,13 @@ const TransferMoneyBetweenUsers = (
       return obj.id === Number(userToWhich2transferId);
     });
     if (userFromWhom2transfer && userToWhich2transfer) {
+      if (!userFromWhom2transfer.isActive) {
+        throw Error("user id " + userFromWhom2transferId + " is inactive. ");
+      } else if (!userToWhich2transfer.isActive) {
+        console.log(`if is true`);
+        console.log(!userToWhich2transfer.isActive);
+        throw Error("user id " + userToWhich2transferId + " is inactive. ");
+      }
       // if both users found
       if (
         sumTotransfer <=
@@ -159,9 +171,22 @@ const getUserById = (userId) => {
     throw Error("no user found");
   }
 };
+//toggle active
 
 //
-
+const toggleActive = (userId) => {
+  const users = readUsersFromFile();
+  const user = users.find((obj) => {
+    return obj.id === Number(userId);
+  });
+  if (user) {
+    user.isActive = !user.isActive;
+    // saveUsers(users);
+    return users;
+  } else {
+    throw Error("no user found");
+  }
+};
 module.exports = {
   readUsersFromFile,
   addUser,
@@ -171,4 +196,5 @@ module.exports = {
   WithdrawMoney,
   TransferMoneyBetweenUsers,
   getUserById,
+  toggleActive,
 };
