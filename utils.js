@@ -12,6 +12,11 @@ const readUsersFromFile = () => {
 const stringToJson = (message, string) => {
   return JSON.stringify({ [message]: string });
 };
+const saveUsers = (users) => {
+  const dataJSON = JSON.stringify(users);
+  fs.writeFileSync("./DB/users.json", dataJSON);
+};
+
 const addUser = (body) => {
   const users = readUsersFromFile();
   let foundUser = users.find((user) => {
@@ -21,13 +26,8 @@ const addUser = (body) => {
   });
   //TODO  we can check we got object correctly
   users.push(body);
-  //saveUsers(users);
+  saveUsers(users);
   return stringToJson("new-client", body);
-};
-
-const saveUsers = (users) => {
-  const dataJSON = JSON.stringify(users);
-  fs.writeFileSync("./DB/users.json", dataJSON);
 };
 
 const removeUser = (userId) => {
@@ -38,7 +38,7 @@ const removeUser = (userId) => {
   const indexToRemove = users.indexOf(user2remove);
   if (indexToRemove > -1) {
     users.splice(indexToRemove, 1);
-    //saveUsers(users);
+    saveUsers(users);
     return users;
   } else {
     throw Error("no user to remove");
@@ -77,7 +77,7 @@ const UpdateCredit = (userId, newCredit) => {
         throw Error("the selected user is inactive- cant update credit!");
       } else {
         user.credit = newCredit;
-        // saveUsers(users);
+        saveUsers(users);
         return users;
       }
     } else {
@@ -101,7 +101,7 @@ const WithdrawMoney = (userId, sumToWithdraw) => {
         } else {
           throw Error("ammount to big to withdraw");
         }
-        // saveUsers(users);
+        saveUsers(users);
         return users;
       } else {
         throw Error("user is inActive- cant withdraw");
@@ -111,7 +111,6 @@ const WithdrawMoney = (userId, sumToWithdraw) => {
     }
   }
 };
-//!active broke function
 //TransferMoneyBwtweenUsers
 const TransferMoneyBetweenUsers = (
   userFromWhom2transferId,
@@ -141,13 +140,7 @@ const TransferMoneyBetweenUsers = (
         sumTotransfer <=
         userFromWhom2transfer.cash + userFromWhom2transfer.credit
       ) {
-        //do
-        console.log("users exists");
-        console.log("valid ammount to transfer");
         userFromWhom2transfer.cash = userFromWhom2transfer.cash - sumTotransfer;
-        // WithdrawMoney(userFromWhom2transferId, sumTotransfer);
-
-        console.log(userFromWhom2transfer.cash);
         userToWhich2transfer.cash = userToWhich2transfer.cash + sumTotransfer;
       } else {
         throw Error(sumTotransfer + "is a ammount to big to transfer. ");
@@ -172,8 +165,6 @@ const getUserById = (userId) => {
   }
 };
 //toggle active
-
-//
 const toggleActive = (userId) => {
   const users = readUsersFromFile();
   const user = users.find((obj) => {
@@ -181,7 +172,7 @@ const toggleActive = (userId) => {
   });
   if (user) {
     user.isActive = !user.isActive;
-    // saveUsers(users);
+    saveUsers(users);
     return users;
   } else {
     throw Error("no user found");
