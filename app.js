@@ -9,6 +9,7 @@ const {
   UpdateCredit,
   WithdrawMoney,
   TransferMoneyBetweenUsers,
+  getUserById,
 } = require("./utils");
 app.use(express.json());
 
@@ -20,8 +21,16 @@ app.get("/users", (req, res) => {
     res.status(400).send({ error: e.message });
   }
 });
+//get a specific user
+app.get("/users/:id", (req, res) => {
+  try {
+    res.status(200).send(getUserById(req.params.id));
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
 
-//
+//add user
 app.post("/users", (req, res) => {
   try {
     res.status(201).send(addUser(req.body));

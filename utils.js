@@ -15,7 +15,6 @@ const addUser = (body) => {
   let foundUser = users.find((user) => {
     if (user.id === body.id) {
       throw Error("The user is allready exist");
-      //? and return
     }
   });
   users.push(body);
@@ -148,6 +147,21 @@ const TransferMoneyBetweenUsers = (
     } else throw Error("user From Whom to transfer not found");
   }
 };
+//get a user
+const getUserById = (userId) => {
+  const users = readUsersFromFile();
+  const user = users.find((obj) => {
+    return obj.id === Number(userId);
+  });
+  if (user) {
+    return user;
+  } else {
+    throw Error("no user found");
+  }
+};
+
+//
+
 module.exports = {
   readUsersFromFile,
   addUser,
@@ -156,4 +170,5 @@ module.exports = {
   UpdateCredit,
   WithdrawMoney,
   TransferMoneyBetweenUsers,
+  getUserById,
 };
