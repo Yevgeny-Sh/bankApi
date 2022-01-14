@@ -60,7 +60,7 @@ const deposition = (userId, ammount) => {
       return users;
     }
   } else {
-    throw Error("no user found");
+    throw Error("no user found 1");
   }
 };
 //UpdateCredit
@@ -81,7 +81,7 @@ const UpdateCredit = (userId, newCredit) => {
         return users;
       }
     } else {
-      throw Error("no user found");
+      throw Error("no user found 2");
     }
   }
 };
@@ -161,7 +161,7 @@ const getUserById = (userId) => {
   if (user) {
     return user;
   } else {
-    throw Error("no user found");
+    throw Error("no user found 3");
   }
 };
 //toggle active
@@ -175,7 +175,31 @@ const toggleActive = (userId) => {
     saveUsers(users);
     return users;
   } else {
-    throw Error("no user found");
+    throw Error("no user found 4");
+  }
+};
+//get a user
+const getUsersOverCashAmmount = (ammount) => {
+  const users = readUsersFromFile();
+  const filteredUsers = users.filter((obj) => {
+    return Number(obj.cash) >= ammount;
+  });
+  if (filteredUsers) {
+    return filteredUsers;
+  } else {
+    throw Error("no (rich) users found ");
+  }
+};
+const getActiveUsersOverCashAmmount = (ammount) => {
+  const users = readUsersFromFile();
+  const filteredUsers = users.filter((obj) => {
+    return Number(obj.cash) >= ammount && obj.isActive;
+  });
+  console.log(filteredUsers);
+  if (filteredUsers) {
+    return filteredUsers;
+  } else {
+    throw Error("no (rich & active) users found ");
   }
 };
 module.exports = {
@@ -188,4 +212,6 @@ module.exports = {
   TransferMoneyBetweenUsers,
   getUserById,
   toggleActive,
+  getUsersOverCashAmmount,
+  getActiveUsersOverCashAmmount,
 };

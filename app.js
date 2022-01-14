@@ -11,6 +11,8 @@ const {
   TransferMoneyBetweenUsers,
   getUserById,
   toggleActive,
+  getUsersOverCashAmmount,
+  getActiveUsersOverCashAmmount,
 } = require("./utils");
 app.use(express.json());
 
@@ -30,7 +32,6 @@ app.get("/users/:id", (req, res) => {
     res.status(400).send({ error: e.message });
   }
 });
-
 //add user
 app.post("/users", (req, res) => {
   try {
@@ -101,6 +102,19 @@ app.put("/users/active", (req, res) => {
     res.status(400).send({ error: e.message });
   }
 });
+
+//
+//get (active) users over cash ammount
+//!app.get("/users/r", (req, res) => {
+//! not even logs req
+app.get("/richusers/active", (req, res) => {
+  try {
+    res.status(200).send(getActiveUsersOverCashAmmount(req.body.cash));
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
+//
 
 const PORT = 3001;
 app.listen(PORT, () => {
