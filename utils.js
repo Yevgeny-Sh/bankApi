@@ -60,7 +60,7 @@ const deposition = (userId, ammount) => {
       return users;
     }
   } else {
-    throw Error("no user found 1");
+    throw Error("no user found ");
   }
 };
 //UpdateCredit
@@ -94,7 +94,6 @@ const WithdrawMoney = (userId, sumToWithdraw) => {
       return obj.id === Number(userId);
     });
     if (user) {
-      console.log(user.isActive);
       if (user.isActive) {
         if (sumToWithdraw <= user.cash + user.credit) {
           user.cash = user.cash - sumToWithdraw;
@@ -104,14 +103,14 @@ const WithdrawMoney = (userId, sumToWithdraw) => {
         saveUsers(users);
         return users;
       } else {
-        throw Error("user is inActive- cant withdraw");
+        throw Error("user is inactive- cant withdraw");
       }
     } else {
-      throw Error("no user found (to withdraw)");
+      throw Error("no user found by that id");
     }
   }
 };
-//TransferMoneyBwtweenUsers
+//Transfer Money Between Users
 const TransferMoneyBetweenUsers = (
   userFromWhom2transferId,
   userToWhich2transferId,
@@ -119,7 +118,7 @@ const TransferMoneyBetweenUsers = (
 ) => {
   const users = readUsersFromFile();
   if (sumTotransfer < 0) {
-    throw Error("negetive sum  entered- pls enter positive number");
+    throw Error("negetive sum entered- please enter positive number");
   } else {
     const userFromWhom2transfer = users.find((obj) => {
       return obj.id === Number(userFromWhom2transferId);
@@ -131,8 +130,6 @@ const TransferMoneyBetweenUsers = (
       if (!userFromWhom2transfer.isActive) {
         throw Error("user id " + userFromWhom2transferId + " is inactive. ");
       } else if (!userToWhich2transfer.isActive) {
-        console.log(`if is true`);
-        console.log(!userToWhich2transfer.isActive);
         throw Error("user id " + userToWhich2transferId + " is inactive. ");
       }
       // if both users found
@@ -148,8 +145,15 @@ const TransferMoneyBetweenUsers = (
       saveUsers(users);
       return users;
     } else if (userFromWhom2transfer) {
-      throw Error("userTo Which to transfer not found");
-    } else throw Error("user From Whom to transfer not found");
+      throw Error(
+        "user To Which to transfer not found. user id no:",
+        userToWhich2transferId
+      );
+    } else
+      throw Error(
+        "user From Whom to transfer not found.user id no:",
+        userFromWhom2transferId
+      );
   }
 };
 //get a user
@@ -161,7 +165,7 @@ const getUserById = (userId) => {
   if (user) {
     return user;
   } else {
-    throw Error("no user found 3");
+    throw Error("no user found ");
   }
 };
 //toggle active
@@ -175,10 +179,10 @@ const toggleActive = (userId) => {
     saveUsers(users);
     return users;
   } else {
-    throw Error("no user found 4");
+    throw Error("no users found ");
   }
 };
-//get a user
+//get all users over cash ammount
 const getUsersOverCashAmmount = (ammount) => {
   const users = readUsersFromFile();
   const filteredUsers = users.filter((obj) => {
@@ -187,7 +191,7 @@ const getUsersOverCashAmmount = (ammount) => {
   if (filteredUsers) {
     return filteredUsers;
   } else {
-    throw Error("no (rich) users found ");
+    throw Error("no rich users found ");
   }
 };
 const getActiveUsersOverCashAmmount = (ammount) => {
@@ -195,11 +199,10 @@ const getActiveUsersOverCashAmmount = (ammount) => {
   const filteredUsers = users.filter((obj) => {
     return Number(obj.cash) >= ammount && obj.isActive;
   });
-  console.log(filteredUsers);
   if (filteredUsers) {
     return filteredUsers;
   } else {
-    throw Error("no (rich & active) users found ");
+    throw Error("no rich & active users found ");
   }
 };
 module.exports = {

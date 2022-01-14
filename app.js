@@ -41,7 +41,7 @@ app.post("/users", (req, res) => {
   }
 });
 
-//removeUser
+//remove User
 app.put("/users/remove/:id", (req, res) => {
   try {
     res.status(200).send(removeUser(req.params.id));
@@ -51,25 +51,21 @@ app.put("/users/remove/:id", (req, res) => {
 });
 //deposition
 app.put("/users/deposit", (req, res) => {
-  console.log(req.body.id);
-  console.log(req.body.ammount);
   try {
     res.status(200).send(deposition(req.body.id, req.body.ammount));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
-//UpdateCredit
+//Update Credit
 app.put("/users/credit", (req, res) => {
-  console.log(req.body.id);
-  console.log(req.body.ammount);
   try {
     res.status(200).send(UpdateCredit(req.body.id, req.body.ammount));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
-//WithdrawMoney
+//Withdraw
 app.put("/users/withdraw", (req, res) => {
   try {
     res.status(200).send(WithdrawMoney(req.body.id, req.body.ammount));
@@ -79,8 +75,6 @@ app.put("/users/withdraw", (req, res) => {
 });
 //transfer
 app.put("/users/transfer", (req, res) => {
-  console.log(req.body.id1);
-  console.log(req.body.id2);
   try {
     res
       .status(200)
@@ -94,29 +88,31 @@ app.put("/users/transfer", (req, res) => {
 
 //toggle active
 app.put("/users/active", (req, res) => {
-  console.log(req.params.active);
-  console.log(req.body.id);
   try {
     res.status(200).send(toggleActive(req.body.id));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
+// get user over cash ammount
+app.get("/rich-users", (req, res) => {
+  try {
+    res.status(200).send(getUsersOverCashAmmount(req.body.cash));
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
 
-//
-//get (active) users over cash ammount
-//!app.get("/users/r", (req, res) => {
-//! not even logs req
-app.get("/richusers/active", (req, res) => {
+//get active users over cash ammount
+app.get("/rich-users/active", (req, res) => {
   try {
     res.status(200).send(getActiveUsersOverCashAmmount(req.body.cash));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
-//
 
-const PORT = 3001;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
